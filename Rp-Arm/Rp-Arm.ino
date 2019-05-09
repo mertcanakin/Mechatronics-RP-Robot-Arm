@@ -18,10 +18,11 @@ static const int STEPS_PER_REVOLUTION = 32 * 64;
 
 float hipo;
 float devir;    //step motorun donmesi 
-float aci;      //servonun doneceği aci
+float aci=0;      //servonun doneceği aci
 
 int x;
 int y;
+
 float angle_degree;
 float devir2;
 float aci2;
@@ -51,7 +52,7 @@ void setup(){
 
 void loop(){
 
-VL53L0X_RangingMeasurementData_t measure;
+  VL53L0X_RangingMeasurementData_t measure;
   Serial.print("Olcum aliniyor...");
   lox.rangingTest(&measure,false);
 
@@ -64,11 +65,11 @@ VL53L0X_RangingMeasurementData_t measure;
   }
   delay(100);
 
-  if(measure.RangeMilliMeter>300){
+  if(measure.RangeMilliMeter>200){
   aci=++aci;
   servo_sensor.write(aci);
 }
-  if(measure.RangeMilliMeter<300){
+  if(measure.RangeMilliMeter<200){
     Serial.println("Cisim bulundu.");
     Serial.print("Aci degeri: ");
     Serial.println(aci);
@@ -78,7 +79,7 @@ VL53L0X_RangingMeasurementData_t measure;
     delay(2000);
     x=measure.RangeMilliMeter*sin(aci);
     y=measure.RangeMilliMeter*cos(aci);
-    devir=62.83*measure.RangeMilliMeter;    //step motorun döndürmesi gereken açı miktarınn hesaplanması
+    devir=20*measure.RangeMilliMeter;    //step motorun döndürmesi gereken açı miktarınn hesaplanması
     Serial.print("Step motorun ötelemesi :");
     Serial.println(devir);
     myStepper.step(devir);      //step motorun döndürülmesi
